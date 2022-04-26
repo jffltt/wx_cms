@@ -1,8 +1,4 @@
 <template>
-  <div id="nav">
-    <router-link to="/">手动添加文章</router-link> |
-    <router-link to="/about">分类管理</router-link>
-  </div>
   <router-view/>
 </template>
 
@@ -11,25 +7,10 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 body{
   padding: 0;
   margin: 0;
-}
-#nav {
-  height: 40px;
-  line-height: 40px;
-  background-color: #2c3e50;
-  a {
-    font-weight: bold;
-    color: #ffffff;
-    text-decoration: none;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
