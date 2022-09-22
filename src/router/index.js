@@ -2,26 +2,78 @@ import {
 	createRouter,
 	createWebHistory
 } from 'vue-router'
-import Home from '../views/Home.vue'
+import Index from '../views/index.vue'
 
 const routes = [{
-		path: '/',
-		name: 'Home',
-		component: Home
+		path: '/index',
+		name: 'Index',
+		component: Index,
+		meta: {
+			requestAutho: true,
+			title: "首页"
+		},
+		children: [{
+			path: 'home',
+			name: 'Home',
+			component: () => import('@/views/component/home.vue'),
+			meta: {
+				requestAutho: true
+			}
+		}, {
+			path: 'about',
+			name: 'About',
+			component: () => import('@/views/component/about.vue'),
+			meta: {
+				requestAutho: true
+			}
+		}, {
+			path: 'setting',
+			name: 'Setting',
+			component: () => import('@/views/component/setting.vue'),
+			meta: {
+				requestAutho: true
+			}
+		}]
 	},
 	{
-		path: '/about',
-		name: 'About',
-		// route level code-splitting
-		// this generates a separate chunk (about.[hash].js) for this route
-		// which is lazy-loaded when the route is visited.
-		component: () => import( /* webpackChunkName: "about" */ '../views/About.vue')
+		path: '/',
+		redirect: '/index/home'
+	},
+	{
+		path: '/login',
+		name: 'Login',
+		component: () => import('../views/login.vue'),
+		meta: {
+			requestAutho: false,
+			title: "登录"
+		}
+	},
+	{
+		path: '/wx_article_list',
+		name: 'wxArticleList',
+		component: () => import('../views/wx-article-list.vue'),
+		meta: {
+			requestAutho: false
+		}
 	}
 ]
 
 const router = createRouter({
 	history: createWebHistory(process.env.BASE_URL),
 	routes
+})
+
+router.beforeEach((to, from, next) => {
+	document.title = `镇江行业老干部办后台管理系统-${to.meta.title}` ?? "镇江市行业老干部管理服务办公室";
+	if (to.meta.requestAutho) {
+		if (localStorage.getItem("token")) {
+			next()
+		} else {
+			router.push('login')
+		}
+	} else {
+		next()
+	}
 })
 
 export default router
