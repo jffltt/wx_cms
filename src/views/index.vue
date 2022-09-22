@@ -55,7 +55,7 @@
 				float: left;
 				margin-left: 10px;
 				line-height: 45px;
-				color: #404be6;
+				color: #409EFF;
 				font-size: 20px;
 				font-weight: 800;
 			}

@@ -1,23 +1,23 @@
 <template>
 	<div v-bind="$attrs">
-		<el-menu active-text-color="#404be6" class="el-menu-vertical-demo" default-active="2" router>
+		<el-menu active-text-color="#409EFF" class="el-menu-vertical-demo" default-active="0" router>
 			<el-menu-item route="home" index="0">
 				<el-icon>
 					<icon-menu />
 				</el-icon>
-				<span>Navigator Two</span>
+				<span>文章列表</span>
 			</el-menu-item>
 			<el-menu-item route="about" index="1">
 				<el-icon>
 					<document />
 				</el-icon>
-				<span>Navigator Three</span>
+				<span>自定义菜单</span>
 			</el-menu-item>
 			<el-menu-item route="setting" index="2">
 				<el-icon>
 					<setting />
 				</el-icon>
-				<span>Navigator Four</span>
+				<span>网站内容管理</span>
 			</el-menu-item>
 		</el-menu>
 	</div>

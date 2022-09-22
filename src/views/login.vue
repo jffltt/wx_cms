@@ -50,7 +50,7 @@
 			//控制点颜色
 			color: {
 				type: String,
-				default: "#3c7dcc",
+				default: "#0066cc",
 			},
 			//控制波浪的位置
 			top: {
@@ -222,8 +222,11 @@
 			}
 
 			function onSubmit() {
-                request.get("/auth/login").then(res => {
-					localStorage.setItem("account", res)
+                request.post("/admin/Login", {
+					user_name: loginData.userName,
+					pass_word: loginData.passWord
+				}).then(res => {
+					localStorage.setItem("token", res.token)
 					router.push('/index/home')
 				})
 			}
@@ -253,7 +256,7 @@
 		#iviewBg {
 			width: 100vw;
 			height: 100vh;
-			background-image: url("../assets/bg.png");
+			background-color: #000;
 			overflow: hidden;
 			position: absolute;
 		}
@@ -267,7 +270,6 @@
 			left: calc(50vw - 250px);
 			border-radius: 10px;
 			padding: 5px 20px;
-			border: 1px solid #3157d3;
 	
 			&>h3 {
 				width: 100%;

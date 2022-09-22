@@ -13,20 +13,20 @@ const routes = [{
 			title: "首页"
 		},
 		children: [{
-			path: 'about',
-			name: 'About',
-			component: () => import('@/views/component/about.vue'),
-			meta: {
-				requestAutho: true
-			}
-		},{
 			path: 'home',
 			name: 'Home',
 			component: () => import('@/views/component/home.vue'),
 			meta: {
 				requestAutho: true
 			}
-		},{
+		}, {
+			path: 'about',
+			name: 'About',
+			component: () => import('@/views/component/about.vue'),
+			meta: {
+				requestAutho: true
+			}
+		}, {
 			path: 'setting',
 			name: 'Setting',
 			component: () => import('@/views/component/setting.vue'),
@@ -37,7 +37,7 @@ const routes = [{
 	},
 	{
 		path: '/',
-		redirect: '/index/about'
+		redirect: '/index/home'
 	},
 	{
 		path: '/login',
@@ -64,9 +64,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-	document.title = to.meta.title ?? "镇江市行业老干部管理服务办公室";
+	document.title = `镇江行业老干部办后台管理系统-${to.meta.title}` ?? "镇江市行业老干部管理服务办公室";
 	if (to.meta.requestAutho) {
-		if (localStorage.getItem("account")) {
+		if (localStorage.getItem("token")) {
 			next()
 		} else {
 			router.push('login')
