@@ -1,6 +1,8 @@
 <template>
 	<div class="home">
 		<div class="header">
+
+
 			<span class="company">镇江市行业老干部管理服务办公室</span>
 			<el-dropdown class="lf-right">
 				<span>Admin</span>
@@ -8,6 +10,8 @@
 					<el-dropdown-menu>
 						<el-dropdown-item>个人中心</el-dropdown-item>
 						<el-dropdown-item>修改密码</el-dropdown-item>
+
+
 						<el-dropdown-item @click="exit" divided>退出</el-dropdown-item>
 					</el-dropdown-menu>
 				</template>
@@ -84,10 +88,11 @@
 			}
 
 			.content {
-				width: calc(100vw - 240px);
-				height: calc(100vh - 65px);
+				width: calc(100vw - 260px);
+				height: calc(100vh - 85px);
 				background-color: #fff;
 				margin: 8px 5px;
+				padding: 10px;
 				box-shadow: 0 0 5px 2px #dfdfdf;
 				float: left;
 			}

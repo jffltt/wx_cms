@@ -1,9 +1,9 @@
 <template>
-	<div>
+	<div v-bind="$attrs">
 		<div class="toolBar">
 			<el-button class="tool-item" type="primary" size="small" @click="activeClassBox">批量归类</el-button>
 		</div>
-		<el-table :data="list" height="80vh" v-loading="loading" stripe border>
+		<el-table :data="list" height="76vh" v-loading="loading" stripe border>
 			<el-table-column type="selection" width="55" align="center" fixed="left" />
 			<el-table-column width="600">
 				<template #header>

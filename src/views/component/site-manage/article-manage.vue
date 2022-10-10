@@ -1,5 +1,5 @@
 <template>
-	<h1>This is an Setting page</h1>
+	<div>文章列表管理</div>
 </template>
 
 <script>

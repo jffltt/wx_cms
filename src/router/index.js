@@ -27,9 +27,16 @@ const routes = [{
 				requestAutho: true
 			}
 		}, {
-			path: 'setting',
-			name: 'Setting',
-			component: () => import('@/views/component/setting.vue'),
+			path: 'site_manage',
+			name: 'SiteManage',
+			component: () => import('@/views/component/site-manage/index.vue'),
+			meta: {
+				requestAutho: true
+			}
+		},{
+			path: 'wx_manage',
+			name: 'WxManage',
+			component: () => import('@/views/component/wx-manage/index.vue'),
 			meta: {
 				requestAutho: true
 			}

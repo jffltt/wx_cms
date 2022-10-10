@@ -7,13 +7,19 @@
 				</el-icon>
 				<span>文章列表</span>
 			</el-menu-item>
-			<el-menu-item route="about" index="1">
+			<el-menu-item route="wx_manage" index="1">
+				<el-icon>
+					<setting />
+				</el-icon>
+				<span>公众号管理</span>
+			</el-menu-item>
+			<el-menu-item route="about" index="2">
 				<el-icon>
 					<document />
 				</el-icon>
 				<span>自定义菜单</span>
 			</el-menu-item>
-			<el-menu-item route="setting" index="2">
+			<el-menu-item route="site_manage" index="3">
 				<el-icon>
 					<setting />
 				</el-icon>
@@ -43,7 +49,7 @@
 	}
 </script>
 <style lang="less" scoped>
-	.el-menu-vertical-demo{
+	.el-menu-vertical-demo {
 		border: none;
 	}
 </style>
