@@ -4,7 +4,7 @@
 			<el-button class="tool-item" size="small" type="primary" @click="activeClassBox">批量归类</el-button>
 			<el-button class="tool-item" size="small" auto-insert-space type="primary" @click="activeClassBox">导出excel</el-button>
 		</div>
-		<el-table :data="list" height="76vh" v-loading="loading" stripe border>
+		<el-table :data="list" height="76vh" v-loading="loading" stripe border @selection-change="selecteArticle" ref="articleTabel">
 			<el-table-column type="selection" width="55" align="center" fixed="left" />
 			<el-table-column width="600">
 				<template #header>
@@ -51,15 +51,15 @@
 					<el-tag style="cursor: pointer;" @click="search={classList: []}">清除赛选</el-tag>
 				</template>
 				<template #default="{ row }">
-					<el-button type="success" @click="edit(row)" size="small">浏览</el-button>
-					<el-button type="primary" @click="edit(row)" size="small">归类</el-button>
+					<el-button type="success" @click="view(row)" size="small">浏览</el-button>
+					<el-button type="primary" @click="activeClassBox(row)" size="small">归类</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
 		<div class="pagination">
 			<el-pagination class="el-pagination" background :page-size="size" layout="total, jumper, pager, next" :total="total" @current-change="changePage" />
 		</div>
-		<Classified v-if="confirmClassShow"></Classified>
+		<Classified v-if="confirmClassShow" :classList="classList" @confirm="confirmClassified" @cancel="cancleClassified"></Classified>
 	</div>
 </template>
 
@@ -89,7 +89,9 @@
 					classList: []
 				},
 				checkedList: [],
-				confirmClassShow: false
+				confirmClassShow: false,
+
+				currentClassId: 0,
 			};
 		},
 		created() {
@@ -101,8 +103,8 @@
 		},
 		watch: {
 			search: {
-				handler: function(val){
-					console.log(val)
+				handler: function() {
+                    this.page = 1;
 					this.getList();
 				},
 				deep: true
@@ -142,20 +144,51 @@
 						});
 				});
 			},
-			edit(row) {
-				console.log(row);
+			view(row) {
+				window.open(row.article_src);
 			},
 			changePage(page) {
 				this.loading = true;
 				this.page = page;
 				this.getList();
 			},
-			activeClassBox() {
+
+			selecteArticle(data) {
+                this.checkedList = data;
+			},
+
+			activeClassBox(row = {}) {
+				if(row?.id){
+					this.checkedList = [row]
+				}
 				if(!this.checkedList.length) {
 					this.$message.warning("请选择要归类的文章");
 				} else {
 					this.confirmClassShow = true;
 				}
+			},
+
+			cancleClassified() {
+                this.checkedList = [];
+				this.$refs.articleTabel.clearSelection();
+				this.confirmClassShow = false;
+			},
+
+			confirmClassified(classId){
+				let params = {
+					classId: classId,
+					ids: [],
+				}
+				this.checkedList.map(item => {
+					params.ids.push(item.id);
+				})
+                
+				request.post("/wx/updateArticle", {params: params}).then(() => {
+					this.$message.success("设置栏目分类成功");
+					this.page = 1;
+					this.getList();
+					this.confirmClassShow = false;
+				})
 			}
 		},
 	};
@@ -170,7 +203,6 @@
 
 		.tool-item {
 			margin-left: 10px;
-			margin-top: 10px;
 		}
 	}
 
