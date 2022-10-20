@@ -34,9 +34,9 @@ const routes = [{
 				requestAutho: true
 			}
 		},{
-			path: 'wx_manage',
-			name: 'WxManage',
-			component: () => import('@/views/component/wx-manage/index.vue'),
+			path: 'wechat_account',
+			name: 'WeChatAccount',
+			component: () => import('@/views/component/wechat-account/index.vue'),
 			meta: {
 				requestAutho: true
 			}
@@ -62,7 +62,7 @@ const routes = [{
 		meta: {
 			requestAutho: false
 		}
-	}
+	},
 ]
 
 const router = createRouter({
