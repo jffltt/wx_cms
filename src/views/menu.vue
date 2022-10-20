@@ -7,7 +7,7 @@
 				</el-icon>
 				<span>文章列表</span>
 			</el-menu-item>
-			<el-menu-item route="wx_manage" index="1">
+			<el-menu-item route="wechat_account" index="1">
 				<el-icon>
 					<setting />
 				</el-icon>
