@@ -13,12 +13,6 @@
 				</el-icon>
 				<span>公众号管理</span>
 			</el-menu-item>
-			<el-menu-item route="about" index="2">
-				<el-icon>
-					<document />
-				</el-icon>
-				<span>自定义菜单</span>
-			</el-menu-item>
 			<el-menu-item route="site_manage" index="3">
 				<el-icon>
 					<setting />
@@ -31,13 +25,11 @@
 
 <script>
 	import {
-		Document,
 		Menu as IconMenu,
 		Setting,
 	} from '@element-plus/icons-vue';
 	export default {
 		components: {
-			Document,
 			IconMenu,
 			Setting
 		},

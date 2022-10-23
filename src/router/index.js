@@ -63,6 +63,14 @@ const routes = [{
 			requestAutho: false
 		}
 	},
+	{
+		path: '/wx_article',
+		name: 'wxArticle',
+		component: () => import('../views/article.vue'),
+		meta: {
+			requestAutho: false
+		}
+	},
 ]
 
 const router = createRouter({
