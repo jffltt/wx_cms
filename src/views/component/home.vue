@@ -124,7 +124,7 @@
         <template #header>
           <span style="margin-right: 10px">操作</span>
           <el-tag style="cursor: pointer" @click="search = { classList: [] }"
-            >清除赛选</el-tag
+            >清除筛选</el-tag
           >
         </template>
         <template #default="{ row }">
