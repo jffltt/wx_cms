@@ -1,9 +1,6 @@
 <template>
   <div>
     <div class="page-top">
-      <el-button type="primary" size="small" @click="navgatToEdit"
-        >创建草稿</el-button
-      >
       <el-button type="success" size="small" @click="updateToSystem(selected)"
         >批量同步</el-button
       >
@@ -116,6 +113,7 @@ export default {
 
         for (let row of res.data.item) {
           for (let col of row.content.news_item) {
+            col.title = col.title + '草稿';
             titles.push(col.title);
           }
         }
@@ -149,10 +147,6 @@ export default {
       this.selected = data;
     },
 
-    navgatToEdit() {
-      window.location.href = "https://amasion.cn/ueditor/index.html";
-    },
-
     updateToSystem(data) {
       let list = data?.length === undefined ? [data] : data;
       if (!list.length) {
@@ -177,7 +171,7 @@ export default {
         }
       }
       this.loading = true;
-      request.post("/wx/UpdateToDataBase", { list: updateList }).then(() => {
+      request.post("/wx/UpdateToDataBase", { list: updateList, classId: 17}).then(() => {
         this.$message.success("同步完成");
         this.getdraftlList();
       }).catch(() => {
