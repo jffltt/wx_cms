@@ -1,48 +1,18 @@
 <template>
   <div v-bind="$attrs">
     <div class="toolBar">
-      <el-button
-        class="tool-item"
-        size="small"
-        type="primary"
-        @click="activeClassBox"
-        >批量归类</el-button
-      >
-      <el-button
-        class="tool-item"
-        size="small"
-        auto-insert-space
-        type="primary"
-        :disabled="limitExportSerach"
-        @click="exportSearchArticle"
-        >导出</el-button
-      >
-      <el-button type="primary" size="small" @click="addManually"
-        >添加微信公众号图文链接</el-button
-      >
+      <el-button class="tool-item" size="small" type="primary" @click="activeClassBox">批量归类</el-button>
+      <el-button class="tool-item" size="small" auto-insert-space type="primary" :disabled="limitExportSerach"
+        @click="exportSearchArticle">导出</el-button>
+      <el-button type="primary" size="small" @click="addManually">添加微信公众号图文链接</el-button>
     </div>
-    <el-table
-      :data="list"
-      height="76vh"
-      v-loading="loading"
-      stripe
-      border
-      @selection-change="selecteArticle"
-      ref="articleTabel"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
-        align="center"
-        fixed="left"
-      />
+    <el-table :data="list" height="76vh" v-loading="loading" stripe border @selection-change="selecteArticle"
+      ref="articleTabel">
+      <el-table-column type="selection" width="55" align="center" fixed="left" />
       <el-table-column width="600">
         <template #header>
           <span class="label">标题</span>
-          <StringFilter
-            class="label-icon"
-            v-model:keyWord="search.title"
-          ></StringFilter>
+          <StringFilter class="label-icon" v-model:keyWord="search.title"></StringFilter>
         </template>
         <template #default="{ row }">
           <el-tooltip effect="light" :content="row.title" placement="top">
@@ -53,62 +23,36 @@
       <el-table-column width="200">
         <template #header>
           <span class="label">分类</span>
-          <ListFilter
-            class="label-icon"
-            :list="classList"
-            v-model:checkList="search.classList"
-          ></ListFilter>
+          <ListFilter class="label-icon" :list="classList" v-model:checkList="search.classList"></ListFilter>
         </template>
         <template #default="{ row }">
-          <span>{{ columnMap[row.article_class_id] }}</span>
+          <span>{{ columnMap[row.article_class] }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="sort" label="排序权重" width="150" align="center">
         <template #default="{ row }">
           <span>{{ row.sort }}</span>
-          <el-popover
-            placement="bottom"
-            :width="400"
-            :visible="showEditId === row.id"
-          >
+          <el-popover placement="bottom" :width="400" :visible="showEditId === row.id">
             <template #reference>
-              <el-button
-                type="text"
-                style="margin-left: 16px"
-                @click="showEditId = row.id"
-                >修改</el-button
-              >
+              <el-button type="primary" link style="margin-left: 16px" @click="showEditId = row.id">修改</el-button>
             </template>
             <div style="width: 400px">
               <el-input v-model="row.sort"></el-input>
-              <el-button
-                @click="updateArticle(row)"
-                style="float: right; margin-top: 20px"
-                size="small"
-                type="primary"
-                >保存</el-button
-              >
-              <el-button
-                @click="showEditId = 0"
-                style="float: right; margin-top: 20px; margin-right: 10px"
-                size="small"
-                type="info"
-                >取消</el-button
-              >
+              <el-button @click="updateArticle(row)" style="float: right; margin-top: 20px" size="small"
+                type="primary">保存</el-button>
+              <el-button @click="showEditId = 0" style="float: right; margin-top: 20px; margin-right: 10px" size="small"
+                type="info">取消</el-button>
             </div>
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column width="200">
+      <el-table-column width="240">
         <template #header>
           <span class="label">发布日期</span>
-          <DateFilter
-            class="label-icon"
-            v-model:dateDate="search.date"
-          ></DateFilter>
+          <DateFilter class="label-icon" v-model:dateDate="search.date"></DateFilter>
         </template>
         <template #default="{ row }">
-          <span>{{ row.reg_date }}</span>
+          <span>{{ row.create_time }}</span>
         </template>
       </el-table-column>
       <el-table-column width="600">
@@ -117,48 +61,28 @@
           <StringFilter class="label-icon"></StringFilter>
         </template>
         <template #default="{ row }">
-          <span class="label-text">{{ row.article_src }}</span>
+          <span class="label-text">{{ row.url }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150px" fixed="right" align="center">
         <template #header>
           <span style="margin-right: 10px">操作</span>
-          <el-tag style="cursor: pointer" @click="search = { classList: [] }"
-            >清除筛选</el-tag
-          >
+          <el-tag style="cursor: pointer" @click="search = { classList: [] }">清除筛选</el-tag>
         </template>
         <template #default="{ row }">
-          <el-button type="success" @click="view(row)" size="small"
-            >浏览</el-button
-          >
-          <el-button type="primary" @click="activeClassBox(row)" size="small"
-            >归类</el-button
-          >
+          <el-button type="success" @click="view(row)" size="small">浏览</el-button>
+          <el-button type="primary" @click="activeClassBox(row)" size="small">归类</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination">
-      <el-pagination
-        class="el-pagination"
-        background
-        :page-size="size"
-        layout="total, jumper, pager, next"
-        :total="total"
-        @current-change="changePage"
-      />
+      <el-pagination class="el-pagination" background :page-size="size" layout="total, jumper, pager, next"
+        :total="total" @current-change="changePage" />
     </div>
-    <Classified
-      v-if="confirmClassShow"
-      :classList="classList"
-      @confirm="confirmClassified"
-      @cancel="cancleClassified"
-    ></Classified>
-    <AddManually
-      v-if="addManuallyShow"
-      :classList="classList"
-      @confirm="confirmAddArticle"
-      @cancel="cancelAddArticle"
-    ></AddManually>
+    <Classified v-if="confirmClassShow" :classList="classList" @confirm="confirmClassified" @cancel="cancleClassified">
+    </Classified>
+    <AddManually v-if="addManuallyShow" :classList="classList" @confirm="confirmAddArticle" @cancel="cancelAddArticle">
+    </AddManually>
   </div>
 </template>
 
@@ -170,6 +94,7 @@ import DateFilter from "../../components/date-filter.vue";
 import Classified from "../../components/classified.vue";
 import AddManually from "../../components/add-manually.vue";
 import createExcel from "@/api/exportXlsx.js";
+import { get } from '@/api/public';
 export default {
   components: {
     StringFilter,
@@ -217,18 +142,12 @@ export default {
   },
   methods: {
     getList() {
-      request
-        .get("/wx/ClumnList", {
-          params: {
-            params: {
-              page: this.page,
-              size: 20,
-            },
-            condition: this.search,
-          },
-        })
-        .then((res) => {
-          this.list = res.data.data;
+      let params = {
+        page: this.page,
+        size: this.size,
+      }
+        get("/wx_article", params).then((res) => {
+          this.list = res.data.results;
           this.total = res.data.count;
           this.loading = false;
         });
@@ -236,12 +155,11 @@ export default {
 
     getArticleTypes() {
       return new Promise((resolve, reject) => {
-        request
-          .get("/wx/ArticleClassList")
+        get("/wx_article_class/all")
           .then((res) => {
             this.classList = res.data;
             res.data.forEach((val) => {
-              this.columnMap[val.id] = val.clumn_name;
+              this.columnMap[val.id] = val.column_name;
             });
             resolve("success");
           })
@@ -252,7 +170,7 @@ export default {
       });
     },
     view(row) {
-      window.open(row.article_src);
+      window.open(row.url);
     },
     changePage(page) {
       this.loading = true;
@@ -363,19 +281,26 @@ export default {
   float: right;
   margin-top: 5px;
 }
+
 .label {
   margin-top: 5px;
   float: left;
 }
+
 .label-icon {
   margin-top: 5px;
   float: right;
 }
+
 .label-text {
   width: 100%;
-  word-wrap: break-word; /*强制换行*/
-  overflow: hidden; /*超出隐藏*/
-  text-overflow: ellipsis; /*隐藏后添加省略号*/
-  white-space: nowrap; /*强制不换行*/
+  word-wrap: break-word;
+  /*强制换行*/
+  overflow: hidden;
+  /*超出隐藏*/
+  text-overflow: ellipsis;
+  /*隐藏后添加省略号*/
+  white-space: nowrap;
+  /*强制不换行*/
 }
 </style>

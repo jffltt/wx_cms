@@ -8,7 +8,7 @@
           v-for="(item, index) in list"
           :key="index"
           :label="item.id"
-          >{{ item.clumn_name }}</el-radio
+          >{{ item.column_name }}</el-radio
         >
       </el-radio-group>
       <div class="operate">

@@ -8,28 +8,12 @@
           <el-input v-model="loginData.userName" :prefix-icon="Avatar" />
         </el-form-item>
         <el-form-item label="密码:">
-          <el-input
-            type="password"
-            :prefix-icon="View"
-            v-model="loginData.passWord"
-          />
+          <el-input type="password" :prefix-icon="View" v-model="loginData.passWord" />
         </el-form-item>
         <el-form-item>
           <div class="submit-box">
-            <el-button
-              class="button"
-              type="success"
-              @click="onSubmit"
-              :icon="Link"
-              >忘记密码</el-button
-            >
-            <el-button
-              class="button"
-              type="primary"
-              @click="onSubmit"
-              :icon="Pointer"
-              >登录</el-button
-            >
+            <el-button class="button" type="success" @click="onSubmit" :icon="Link">忘记密码</el-button>
+            <el-button class="button" type="primary" @click="onSubmit" :icon="Pointer">登录</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -40,8 +24,9 @@
 <script>
 import * as THREE from "three";
 import router from "../router/index.js";
-import request from "../api/request";
+import {login} from "../api/public";
 import { onMounted, reactive } from "vue";
+import { ElMessage } from 'element-plus';
 import { Link, Pointer, Avatar, View } from "@element-plus/icons-vue";
 export default {
   props: {
@@ -58,7 +43,7 @@ export default {
     //控制点颜色
     color: {
       type: String,
-      default: "#0066cc",
+      default: "#cccccc",
     },
     //控制波浪的位置
     top: {
@@ -227,23 +212,26 @@ export default {
     function animate() {
       requestAnimationFrame(animate);
       render();
-      //fps 实时更新
-      // stats.update();
     }
 
-    function onSubmit() {
-      request
-        .post("/admin/Login", {
-          user_name: loginData.userName,
-          pass_word: loginData.passWord,
-        })
-        .then((res) => {
-          if (res.data.code === 20000) {
-			localStorage.setItem("userName",loginData.userName);
-            localStorage.setItem("token", res.data.token);
-            router.push("/index/home");
-          }
-        });
+    async function onSubmit() {
+      try {
+        const params = {
+          username: loginData.userName,
+          password: loginData.passWord,
+        }
+        let res = await login('/login', params);
+        if (res.status === 200) {
+          localStorage.setItem("userName", loginData.userName);
+          localStorage.setItem("token", res.data.token);
+          ElMessage.success('登录成功');
+          router.push("/index/home");
+        } else {
+          ElMessage.warning('登录失败');
+        }
+      } catch {
+        ElMessage.error('网络请求错误');
+      }
     }
 
     onMounted(() => {
@@ -271,7 +259,7 @@ export default {
   #iviewBg {
     width: 100vw;
     height: 100vh;
-    background-color: #000;
+    background-color: rgb(255, 255, 255);
     overflow: hidden;
     position: absolute;
   }
@@ -281,15 +269,16 @@ export default {
     height: 350px;
     position: fixed;
     color: #ffffff;
+    box-shadow: 0 0 16px 2px #ececec;
     top: calc(50vh - 225px);
     left: calc(50vw - 250px);
     border-radius: 10px;
     padding: 5px 20px;
 
-    & > h3 {
+    &>h3 {
       width: 100%;
       line-height: 80px;
-      color: rgb(255, 255, 255);
+      color: rgb(39, 71, 211);
       border-bottom: 1px solid #fcfcfc;
     }
 
@@ -298,6 +287,7 @@ export default {
       width: 100%;
       text-align: center;
       line-height: 60px;
+
       .button {
         width: 48.5%;
       }
