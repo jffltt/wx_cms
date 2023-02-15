@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import request from "@/api/request.js";
+import {get, post} from "@/api/public.js";
 export default {
   data() {
     return {
@@ -106,7 +106,7 @@ export default {
           count: this.size,
         },
       };
-      request.post("/wx/curlApi", data).then((res) => {
+      get("/wx/curlApi", data).then((res) => {
         const list = [];
         const titles = [];
         this.materialCount = res.data.total_count;
@@ -118,7 +118,7 @@ export default {
           }
         }
 
-        request.post("/wx/checkUpdate", { titles: titles }).then((checks) => {
+        post("/wx/checkUpdate", { titles: titles }).then((checks) => {
           this.titleMap = {};
           for (let check of checks.data) {
             this.titleMap[check.title] = true;
@@ -171,7 +171,7 @@ export default {
         }
       }
       this.loading = true;
-      request.post("/wx/UpdateToDataBase", { list: updateList, classId: 17}).then(() => {
+      post("/wx/UpdateToDataBase", { list: updateList, classId: 17}).then(() => {
         this.$message.success("同步完成");
         this.getdraftlList();
       }).catch(() => {
