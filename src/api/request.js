@@ -1,6 +1,6 @@
 import axios from 'axios'
 const token = localStorage.getItem('token');
-const BASE_URL = "https://project.amasion.cn";
+const BASE_URL = "https://backend.zjhylgbb.cn";
 
 const instance = axios.create({
     baseURL: BASE_URL

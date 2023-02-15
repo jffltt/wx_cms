@@ -6,9 +6,9 @@
 					<Filter></Filter>
 				</el-icon>
 			</template>
-			<el-checkbox-group v-model="checked">
+			<el-checkbox-group v-model="checked" style="max-height: 300px; overflow-y: auto;">
 				<div v-for="(item, index) in list" :key="index">
-					<el-checkbox :label="item.id">{{item.clumn_name}}</el-checkbox>
+					<el-checkbox :label="item.id">{{item.column_name}}</el-checkbox>
 				</div>
 			</el-checkbox-group>
 			<div class="toolBar">

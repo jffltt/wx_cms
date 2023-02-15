@@ -23,7 +23,6 @@
 
 <script>
 import * as THREE from "three";
-import router from "../router/index.js";
 import {login} from "../api/public";
 import { onMounted, reactive } from "vue";
 import { ElMessage } from 'element-plus';
@@ -225,7 +224,7 @@ export default {
           localStorage.setItem("userName", loginData.userName);
           localStorage.setItem("token", res.data.token);
           ElMessage.success('登录成功');
-          router.push("/index/home");
+          window.location.href = '/';
         } else {
           ElMessage.warning('登录失败');
         }

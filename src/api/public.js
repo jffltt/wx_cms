@@ -1,7 +1,7 @@
 import request from './request';
 import { loginRequest } from './request';
 
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = request.defaults.baseURL;
 
 export function login(url, data) {
     return loginRequest({
@@ -9,6 +9,15 @@ export function login(url, data) {
         baseURL: BASE_URL,
         method: 'post',
         data: data,
+    })
+}
+
+export function public_view(url, params) {
+    return loginRequest({
+        url: url,
+        baseURL: BASE_URL,
+        method: 'get',
+        params: params,
     })
 }
 

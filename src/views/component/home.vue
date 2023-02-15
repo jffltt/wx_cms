@@ -124,7 +124,7 @@ export default {
       limitExportSerach: false,
     };
   },
-  created() {
+  mounted() {
     this.getArticleTypes().then((res) => {
       if (res === "success") {
         this.getList();
@@ -142,20 +142,23 @@ export default {
   },
   methods: {
     getList() {
+      this.loading = true;
       let params = {
         page: this.page,
         size: this.size,
+        title: this.search.title,
+        article_class: this.search.classList.join(','),
       }
-        get("/wx_article", params).then((res) => {
-          this.list = res.data.results;
-          this.total = res.data.count;
-          this.loading = false;
-        });
+      get("/wx_article_manage", params).then((res) => {
+        this.list = res.data.results;
+        this.total = res.data.count;
+        this.loading = false;
+      });
     },
 
     getArticleTypes() {
-      return new Promise((resolve, reject) => {
-        get("/wx_article_class/all")
+      return new Promise((resolve) => {
+        get("/wx_article_class_manage/all")
           .then((res) => {
             this.classList = res.data;
             res.data.forEach((val) => {
@@ -163,10 +166,6 @@ export default {
             });
             resolve("success");
           })
-          .catch(() => {
-            this.$message.warning("获取分类失败");
-            reject("error");
-          });
       });
     },
     view(row) {

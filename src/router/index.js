@@ -5,7 +5,7 @@ import {
 import Index from '../views/index.vue'
 
 const routes = [{
-		path: '/index',
+		path: '/admin',
 		name: 'Index',
 		component: Index,
 		meta: {
@@ -41,10 +41,6 @@ const routes = [{
 				requestAutho: true
 			}
 		}]
-	},
-	{
-		path: '/',
-		redirect: '/index/home'
 	},
 	{
 		path: '/login',
