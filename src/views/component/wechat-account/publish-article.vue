@@ -82,13 +82,13 @@
 </template>
 
 <script>
-import request from "@/api/request.js";
+import {post} from "@/api/public.js";
 export default {
   data() {
     return {
       publishArticleList: [],
       page: 1,
-      size: 10,
+      size: 5,
       materialCount: 0,
       loading: true,
       selected: [],
@@ -107,7 +107,7 @@ export default {
           count: this.size,
         },
       };
-      request.post("/wx/curlApi", data).then((res) => {
+      post("/wx/curlApi", data).then((res) => {
         const list = [];
         const titles = [];
         this.materialCount = res.data.total_count;
@@ -118,7 +118,7 @@ export default {
           }
         }
 
-        request.post("/wx/checkUpdate", { titles: titles }).then((checks) => {
+        post("/check_titles", { titles: titles }).then((checks) => {
           this.titleMap = {};
           for (let check of checks.data) {
             this.titleMap[check.title] = true;
@@ -167,15 +167,27 @@ export default {
 
       let updateList = [];
       for (let item of list) {
-        updateList.push(item);
+        updateList.push({
+          title: item.title,
+          cover_img: item.thumb_url,
+          content: item.content,
+          url: item.url,
+          sort: 0,
+        });
         if (item.children) {
           for (let subItem of item.children) {
-            updateList.push(subItem);
+            updateList.push({
+              title: subItem.title,
+              cover_img: subItem.thumb_url,
+              content: subItem.content,
+              url: subItem.url,
+              sort: 0,
+            });
           }
         }
       }
       this.loading = true;
-      request.post("/wx/UpdateToDataBase", { list: updateList, classId: 16}).then(() => {
+      post("/wx_article_manage/", { list: updateList, article_class: 16}).then(() => {
         this.$message.success("同步完成");
         this.getPublishArticleList();
       }).catch(() => {

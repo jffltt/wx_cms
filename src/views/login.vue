@@ -224,9 +224,9 @@ export default {
           localStorage.setItem("userName", loginData.userName);
           localStorage.setItem("token", res.data.token);
           ElMessage.success('登录成功');
-          window.location.href = '/';
+          window.location.href = '/admin/home';
         } else {
-          ElMessage.warning('登录失败');
+          ElMessage.warning('账号或密码错误');
         }
       } catch {
         ElMessage.error('网络请求错误');

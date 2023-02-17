@@ -38,3 +38,21 @@ export function get(url, params) {
         params: params,
     })
 }
+
+export function patch(url, data) {
+    return request({
+        url: url,
+        baseURL: BASE_URL,
+        method: 'patch',
+        data: data,
+    })
+}
+
+export function remove(url, data) {
+    return request({
+        url: url,
+        baseURL: BASE_URL,
+        method: 'delete',
+        data: data,
+    })
+}

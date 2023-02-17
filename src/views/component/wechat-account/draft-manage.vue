@@ -1,56 +1,31 @@
 <template>
   <div>
     <div class="page-top">
-      <el-button type="success" size="small" @click="updateToSystem(selected)"
-        >批量同步</el-button
-      >
+      <el-button type="success" size="small" @click="updateToSystem(selected)">批量同步</el-button>
     </div>
     <div class="page-content" v-loading="loading">
-      <el-table
-        :data="draftlList"
-        row-key="id"
-        border
-        height="60vh"
-        @selection-change="selectedData"
-      >
+      <el-table :data="draftlList" row-key="id" border height="60vh" @selection-change="selectedData">
         <el-table-column type="selection"></el-table-column>
-        <el-table-column label="标题" sortable min-width="300">
+        <el-table-column width="80" prop="id" label="ID"></el-table-column>
+        <el-table-column label="标题" sortable min-width="500">
           <template #default="{ row }">
-            <el-popover
-              placement="bottom"
-              :width="600"
-              trigger="hover"
-              :content="row.title"
-            >
+            <el-popover placement="bottom" :width="600" trigger="hover" :content="row.title">
               <template #reference>
                 <span class="label-text">{{ row.title }}</span>
               </template>
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="is_update"
-          label="是否已同步"
-          sortable
-          min-width="100"
-          align="center"
-        >
+        <el-table-column prop="is_update" label="是否已同步" sortable min-width="100" align="center">
           <template #default="{ row }">
-            <el-tag v-if="titleMap[row.title]" class="ml-2" type="success"
-              >完成</el-tag
-            >
+            <el-tag v-if="titleMap[row.title]" class="ml-2" type="success">完成</el-tag>
             <el-tag v-else class="ml-2" type="warning">待同步</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="author" label="作者" sortable min-width="180" />
         <el-table-column label="url" sortable min-width="300">
           <template #default="{ row }">
-            <el-popover
-              placement="bottom"
-              :width="600"
-              trigger="hover"
-              :content="row.url"
-            >
+            <el-popover placement="bottom" :width="600" trigger="hover" :content="row.url">
               <template #reference>
                 <span class="label-text">{{ row.url }}</span>
               </template>
@@ -59,35 +34,25 @@
         </el-table-column>
         <el-table-column label="操作" width="180">
           <template #default="{ row }">
-            <el-button size="small" type="primary" @click="copyUrl(row)"
-              >复制URL</el-button
-            >
-            <el-button size="small" type="success" @click="updateToSystem(row)"
-              >同步</el-button
-            >
+            <el-button size="small" type="primary" @click="copyUrl(row)">复制URL</el-button>
+            <el-button size="small" type="success" @click="updateToSystem(row)">同步</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination
-      class="pagination"
-      :page-size="size"
-      background
-      layout="total, prev, pager, next"
-      :total="materialCount"
-      @current-change="changePage"
-    ></el-pagination>
+    <el-pagination class="pagination" :page-size="size" background layout="total, prev, pager, next"
+      :total="materialCount" @current-change="changePage"></el-pagination>
   </div>
 </template>
 
 <script>
-import {get, post} from "@/api/public.js";
+import { post } from "@/api/public.js";
 export default {
   data() {
     return {
       draftlList: [],
       page: 1,
-      size: 10,
+      size: 5,
       materialCount: 0,
       loading: true,
       selected: [],
@@ -106,7 +71,7 @@ export default {
           count: this.size,
         },
       };
-      get("/wx/curlApi", data).then((res) => {
+      post("/wx/curlApi", data).then((res) => {
         const list = [];
         const titles = [];
         this.materialCount = res.data.total_count;
@@ -118,7 +83,7 @@ export default {
           }
         }
 
-        post("/wx/checkUpdate", { titles: titles }).then((checks) => {
+        post("/check_titles", { titles: titles }).then((checks) => {
           this.titleMap = {};
           for (let check of checks.data) {
             this.titleMap[check.title] = true;
@@ -163,15 +128,28 @@ export default {
 
       let updateList = [];
       for (let item of list) {
-        updateList.push(item);
+        updateList.push({
+          title: item.title,
+          cover_img: item.thumb_url,
+          content: item.content,
+          url: item.url,
+          sort: 0,
+        });
         if (item.children) {
           for (let subItem of item.children) {
-            updateList.push(subItem);
+            updateList.push({
+              title: subItem.title,
+              cover_img: subItem.thumb_url,
+              content: subItem.content,
+              url: subItem.url,
+              sort: 0,
+            });
           }
         }
       }
       this.loading = true;
-      post("/wx/UpdateToDataBase", { list: updateList, classId: 17}).then(() => {
+      console.log(updateList)
+      post("/wx_article_manage/", { list: updateList, article_class: 17}).then(() => {
         this.$message.success("同步完成");
         this.getdraftlList();
       }).catch(() => {
@@ -202,24 +180,29 @@ export default {
   margin-bottom: 10px;
   padding-bottom: 15px;
 }
+
 .material-img {
   width: 20%;
   height: 200px;
   float: left;
   text-align: center;
   margin-bottom: 15px;
+
   .operate {
     background-color: rgb(236, 236, 236);
     width: 96%;
     margin-left: 2%;
   }
+
   .img-item {
     width: 96%;
     height: 170px;
   }
 }
+
 .page-content {
   height: 600px;
+
   .label-text {
     width: 100%;
     word-wrap: break-word;
@@ -228,6 +211,7 @@ export default {
     white-space: nowrap;
   }
 }
+
 .pagination {
   float: right;
   margin-top: 20px;

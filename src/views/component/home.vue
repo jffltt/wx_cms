@@ -36,12 +36,12 @@
             <template #reference>
               <el-button type="primary" link style="margin-left: 16px" @click="showEditId = row.id">修改</el-button>
             </template>
-            <div style="width: 400px">
-              <el-input v-model="row.sort"></el-input>
+            <div style="width: 360px">
+              <el-input v-model="row.sort" style="width: 100%"></el-input>
               <el-button @click="updateArticle(row)" style="float: right; margin-top: 20px" size="small"
                 type="primary">保存</el-button>
-              <el-button @click="showEditId = 0" style="float: right; margin-top: 20px; margin-right: 10px" size="small"
-                type="info">取消</el-button>
+              <el-button @click="showEditId = 0" style="float: right; margin-top: 20px; margin-right: 10px;"
+                size="small" type="info">取消</el-button>
             </div>
           </el-popover>
         </template>
@@ -87,14 +87,13 @@
 </template>
 
 <script>
-import request from "../../api/request.js";
 import StringFilter from "../../components/string-filter.vue";
 import ListFilter from "../../components/list-filter.vue";
 import DateFilter from "../../components/date-filter.vue";
 import Classified from "../../components/classified.vue";
 import AddManually from "../../components/add-manually.vue";
 import createExcel from "@/api/exportXlsx.js";
-import { get } from '@/api/public';
+import { get, post, patch } from '@/api/public';
 export default {
   components: {
     StringFilter,
@@ -198,16 +197,16 @@ export default {
       this.confirmClassShow = false;
     },
 
-    confirmClassified(classId) {
+    confirmClassified(article_class) {
       let params = {
-        classId: classId,
+        article_class: article_class,
         ids: [],
       };
       this.checkedList.map((item) => {
         params.ids.push(item.id);
       });
 
-      request.post("/wx/SetClass", { params: params }).then(() => {
+      post("/wx_article_manage/classification/", params).then(() => {
         this.$message.success("设置栏目分类成功");
         this.page = 1;
         this.getList();
@@ -216,13 +215,12 @@ export default {
     },
 
     updateArticle(row) {
-      request.post("/wx/updateArticle", { params: row }).then((res) => {
-        if (res.data.code === 20000) {
-          this.$message.success("编辑已保存");
-          this.showEditId = 0;
-          this.page = 1;
-          this.getList();
-        }
+      row.updater = localStorage.getItem('userName');
+      patch(`/wx_article_manage/${row.id}/`, row).then(() => {
+        this.$message.success("编辑已保存");
+        this.showEditId = 0;
+        this.page = 1;
+        this.getList();
       });
     },
 
@@ -242,15 +240,14 @@ export default {
     exportSearchArticle() {
       let fileName = "文章列表" + new Date().getTime();
       let columnName = "标题,归属栏目,文章链接,排序,导入时间";
-      let columnValue = "title,article_class_id,article_src,sort,reg_date";
-      request
-        .get("/wx/QueryAllArticle", {
-          params: {
-            condition: this.search,
-          },
-        })
+      let columnValue = "title,article_class,url,sort,create_time";
+      get("/wx_article_manage", {
+        condition: this.search,
+        page: 1,
+        size: this.total,
+      },)
         .then((res) => {
-          let data = res.data.data;
+          let data = res.data.results;
           createExcel({
             fileName,
             columnName,
