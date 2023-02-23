@@ -12,31 +12,34 @@ const routes = [{
 		requestAutho: true,
 		title: "首页"
 	},
-	children: [{
-		path: 'home',
-		name: 'Home',
-		component: () => import('@/views/component/wechat-account/home.vue'),
-		meta: {
-			requestAutho: true
+	children: [
+		{
+			path: 'home',
+			name: 'ManageHome',
+			component: () => import('@/views/component/wechat-account/home.vue'),
+			meta: {
+				requestAutho: true
+			}
+		},
+		{
+			path: 'site_manage',
+			name: 'SiteManage',
+			component: () => import('@/views/component/site-manage/index.vue'),
+			meta: {
+				requestAutho: true
+			}
+		}, {
+			path: 'wechat_account',
+			name: 'WeChatAccount',
+			component: () => import('@/views/component/wechat-account/index.vue'),
+			meta: {
+				requestAutho: true
+			}
 		}
-	}, {
-		path: 'site_manage',
-		name: 'SiteManage',
-		component: () => import('@/views/component/site-manage/index.vue'),
-		meta: {
-			requestAutho: true
-		}
-	}, {
-		path: 'wechat_account',
-		name: 'WeChatAccount',
-		component: () => import('@/views/component/wechat-account/index.vue'),
-		meta: {
-			requestAutho: true
-		}
-	}]
+	]
 },
 {
-    path: '/',
+	path: '/',
 	redirect: '/index/home',
 },
 {
@@ -53,21 +56,21 @@ const routes = [{
 		meta: {
 			requestAutho: false
 		}
-	},{
+	}, {
 		path: 'about',
 		name: 'About',
 		component: () => import('@/views/component/website/about.vue'),
 		meta: {
 			requestAutho: false
 		}
-	},{
+	}, {
 		path: 'news',
 		name: 'News',
 		component: () => import('@/views/component/website/news.vue'),
 		meta: {
 			requestAutho: false
 		}
-	},{
+	}, {
 		path: 'connect',
 		name: 'Connect',
 		component: () => import('@/views/component/website/connect.vue'),
