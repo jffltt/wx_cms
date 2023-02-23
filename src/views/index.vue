@@ -55,7 +55,7 @@ let isMobile = computed(() => {
 });
 
 function navGetTo(item) {
-  this.currentPath = item.path;
+  currentPath = item.path;
   router.push({ path: item.path })
 }
 
