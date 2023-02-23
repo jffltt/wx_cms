@@ -87,11 +87,11 @@
 </template>
 
 <script>
-import StringFilter from "../../components/string-filter.vue";
-import ListFilter from "../../components/list-filter.vue";
-import DateFilter from "../../components/date-filter.vue";
-import Classified from "../../components/classified.vue";
-import AddManually from "../../components/add-manually.vue";
+import StringFilter from "../../../components/string-filter.vue";
+import ListFilter from "../../../components/list-filter.vue";
+import DateFilter from "../../../components/date-filter.vue";
+import Classified from "../../../components/classified.vue";
+import AddManually from "../../../components/add-manually.vue";
 import createExcel from "@/api/exportXlsx.js";
 import { get, post, patch } from '@/api/public';
 export default {
