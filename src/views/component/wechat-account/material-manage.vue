@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import request from "@/api/request.js";
+import {post} from "@/api/public";
 export default {
   data() {
     return {
@@ -43,7 +43,7 @@ export default {
           count: this.size,
         },
       };
-      request.post("/wx/curlApi", data).then((res) => {
+      post("/wx/curlApi", data).then((res) => {
         this.materialList = res.data.item;
         this.materialCount = res.data.total_count;
         this.loading = false;

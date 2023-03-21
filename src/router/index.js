@@ -2,75 +2,100 @@ import {
 	createRouter,
 	createWebHistory
 } from 'vue-router'
-import Index from '../views/index.vue'
+import Admin from '../views/admin.vue'
 
 const routes = [{
-		path: '/index',
-		name: 'Index',
-		component: Index,
-		meta: {
-			requestAutho: true,
-			title: "首页"
-		},
-		children: [{
+	path: '/admin',
+	name: 'Admin',
+	component: Admin,
+	meta: {
+		requestAutho: true,
+		title: "首页"
+	},
+	children: [
+		{
 			path: 'home',
-			name: 'Home',
-			component: () => import('@/views/component/home.vue'),
+			name: 'ManageHome',
+			component: () => import('@/views/component/wechat-account/home.vue'),
 			meta: {
 				requestAutho: true
 			}
-		}, {
-			path: 'about',
-			name: 'About',
-			component: () => import('@/views/component/about.vue'),
-			meta: {
-				requestAutho: true
-			}
-		}, {
+		},
+		{
 			path: 'site_manage',
 			name: 'SiteManage',
 			component: () => import('@/views/component/site-manage/index.vue'),
 			meta: {
 				requestAutho: true
 			}
-		},{
+		}, {
 			path: 'wechat_account',
 			name: 'WeChatAccount',
 			component: () => import('@/views/component/wechat-account/index.vue'),
 			meta: {
 				requestAutho: true
 			}
-		}]
-	},
-	{
-		path: '/',
-		redirect: '/index/home'
-	},
-	{
-		path: '/login',
-		name: 'Login',
-		component: () => import('../views/login.vue'),
-		meta: {
-			requestAutho: false,
-			title: "登录"
 		}
+	]
+},
+{
+	path: '/',
+	redirect: '/index/home',
+},
+{
+	path: '/index',
+	name: 'Index',
+	component: () => import('../views/index.vue'),
+	meta: {
+		requestAutho: false,
 	},
-	{
-		path: '/wx_article_list',
-		name: 'wxArticleList',
-		component: () => import('../views/wx-article-list.vue'),
-		meta: {
-			requestAutho: false
-		}
-	},
-	{
-		path: '/wx_article',
-		name: 'wxArticle',
-		component: () => import('../views/article.vue'),
+	children: [{
+		path: 'home',
+		name: 'Home',
+		component: () => import('@/views/component/website/home.vue'),
 		meta: {
 			requestAutho: false
 		}
-	},
+	}, {
+		path: 'about',
+		name: 'About',
+		component: () => import('@/views/component/website/about.vue'),
+		meta: {
+			requestAutho: false
+		}
+	}, {
+		path: 'news',
+		name: 'News',
+		component: () => import('@/views/component/website/news.vue'),
+		meta: {
+			requestAutho: false
+		}
+	}, {
+		path: 'connect',
+		name: 'Connect',
+		component: () => import('@/views/component/website/connect.vue'),
+		meta: {
+			requestAutho: false
+		}
+	}]
+},
+{
+	path: '/login',
+	name: 'Login',
+	component: () => import('../views/login.vue'),
+	meta: {
+		requestAutho: false,
+		title: "登录"
+	}
+},
+{
+	path: '/wx_article_list',
+	name: 'wxArticleList',
+	component: () => import('../views/wx-article-list.vue'),
+	meta: {
+		requestAutho: false
+	}
+},
 ]
 
 const router = createRouter({

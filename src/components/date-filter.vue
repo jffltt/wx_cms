@@ -51,10 +51,10 @@
 		},
 		methods: {
 			beforeEnter() {
-				this.$root.$el.addEventListener("mousedown", this.hide)
+				this.$root.$el.addEventListener("click", this.hide)
 			},
 			beforeLeave() {
-				this.$root.$el.removeEventListener("mousedown", this.hide)
+				this.$root.$el.removeEventListener("click", this.hide)
 			},
 			hide() {
 				this.visible = false;

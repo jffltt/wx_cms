@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import request from "@/api/request.js";
+import {post} from "@/api/public.js";
 export default {
   data () {
     return {
@@ -66,7 +66,12 @@ export default {
   },
   methods: {
     init() {
-      request.get("/wx/MenuItem").then((res) => {
+      let data = {
+        method: "get",
+        url: "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token",
+        params: {},
+      };
+      post("/wx/curlApi", data).then((res) => {
         this.menuList = res.data.selfmenu_info.button;
         this.currentMenu = this.menuList[0];
         this.currentIndex = 1;
@@ -103,7 +108,7 @@ export default {
           button: newMenu
         },
       };
-      request.post("/wx/curlApi", data).then((res) => {
+      post("/wx/curlApi", data).then((res) => {
         if(res.data.errcode === 0) {
           this.$message.success("自定义菜单已保存,请到公众号查看")
         }
