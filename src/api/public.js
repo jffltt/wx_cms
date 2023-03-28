@@ -1,7 +1,7 @@
 import request from './request';
 import { loginRequest } from './request';
 
-const BASE_URL = request.defaults.baseURL;
+export const BASE_URL = request.defaults.baseURL;
 
 export function login(url, data) {
     return loginRequest({
