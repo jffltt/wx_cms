@@ -235,7 +235,7 @@ export default {
   }
 }
 .page-content {
-  height: 600px;
+  height: 60vh;
   .label-text {
     width: 100%;
     word-wrap: break-word;

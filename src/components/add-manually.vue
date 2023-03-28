@@ -1,65 +1,39 @@
 <template>
   <div class="cover">
     <div class="wap">
-      <div class="title">添加文章</div>
-      <el-form
-        :model="newArticle"
-        class="content"
-        label-position="top"
-        ref="newArticle"
-        :rules="rules"
-      >
+      <div class="title">{{ editData ? '编辑文章' : '添加文章' }}</div>
+      <el-form :model="newArticle" class="content" label-position="top" ref="newArticle" :rules="rules">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="选择栏目分类:" prop="article_class_id">
-              <el-select
-                v-model="newArticle.article_class_id"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="(item, index) in classList"
-                  :key="index"
-                  :label="item.clumn_name"
-                  :value="item.id"
-                ></el-option>
+            <el-form-item label="选择栏目分类:" prop="article_class">
+              <el-select v-model="newArticle.article_class" style="width: 100%">
+                <el-option v-for="(item, index) in classList" :key="index" :label="item.column_name"
+                  :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11" :offset="2">
             <el-form-item label="标题:" required prop="title">
-              <el-input
-                v-model="newArticle.title"
-                placeholder="请输入标题"
-              ></el-input>
+              <el-input v-model="newArticle.title" placeholder="请输入标题"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="文章链接:" required prop="url">
-          <el-input
-            v-model="newArticle.url"
-            placeholder="请输入标题"
-          ></el-input>
+          <el-input v-model="newArticle.url" placeholder="请输入标题"></el-input>
         </el-form-item>
-        <el-form-item label="封面:" required prop="thumb_url">
-          <el-upload
-            class="avatar-uploader"
-            action="https://project.amasion.cn/base/richUpload"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            ref="upload"
-          >
-            <img
-              v-if="newArticle.thumb_url"
-              :src="newArticle.thumb_url"
-              class="avatar"
-            />
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+        <el-form-item label="封面:" required prop="cover_img">
+          <el-upload class="avatar-uploader" :action="baseUrl + '/common/upload_img'" :show-file-list="false"
+            :on-success="handleAvatarSuccess" accept=".png, .jpeg, .jpg" name="files" ref="upload">
+            <img v-if="newArticle.cover_img" :src="newArticle.cover_img" class="avatar" />
+            <el-icon v-else class="avatar-uploader-icon">
+              <Plus />
+            </el-icon>
           </el-upload>
         </el-form-item>
       </el-form>
       <div class="operate">
-        <el-button type="primary" size="small" @click="confirm">确认</el-button>
+        <el-button type="primary" size="small" @click="saveEdit" v-if="editData">保存编辑</el-button>
+        <el-button type="primary" size="small" @click="confirm" v-else>确认</el-button>
         <el-button type="info" size="small" @click="cancel">取消</el-button>
       </div>
     </div>
@@ -68,42 +42,55 @@
 
 <script>
 import { Plus } from "@element-plus/icons-vue";
-import request from "@/api/request.js";
+import { BASE_URL, post } from "@/api/public";
+import { patch } from "../api/public";
 export default {
   components: { Plus },
   data() {
     return {
+      baseUrl: BASE_URL,
       list: [],
       classId: 0,
       newArticle: {
         content: "手动导入没有内容",
-        thumb_url: "",
+        cover_img: "",
       },
       rules: {
-        article_class_id: [{required: true, message: '请选择栏目分类', trigger: 'change'}],
-        url: [{required: true, message: '请输入文章链接', trigger: 'blur'}],
-        thumb_url: [{required: true, message: '请上传封面', trigger: 'change'}],
-        title: [{required: true, message: '输入标题', trigger: 'blur'}]
+        article_class: [{ required: true, message: '请选择栏目分类', trigger: 'change' }],
+        url: [{ required: true, message: '请输入文章链接', trigger: 'blur' }],
+        cover_img: [{ required: true, message: '请上传封面', trigger: 'change' }],
+        title: [{ required: true, message: '输入标题', trigger: 'blur' }]
       }
     };
   },
   props: {
     classList: [Array],
+    editData: [Object],
   },
   mounted() {
     this.list = [...this.classList];
+    if (this.editData) {
+      this.newArticle = { ...this.editData };
+    }
   },
   methods: {
     async confirm() {
       await this.$refs.newArticle.validate((valid, fields) => {
         if (valid) {
-          let params = {
-            params: this.newArticle
+          const params = {
+            list: [{
+              title: this.newArticle.title,
+              cover_img: this.newArticle.cover_img,
+              content: this.newArticle.content,
+              url: this.newArticle.url,
+              creator: localStorage.getItem('userName'),
+            }],
+            article_class: this.newArticle.article_class,
           }
-          request.post("/wx/AddArticleManually", params).then(res => {
-            if(res.data.code === '0000') {
+          post("/wx_article_manage/", params).then(res => {
+            if (res.status === 200) {
               this.$message.success("添加成功");
-              this.$emit("confirm")
+              this.$emit("confirm");
             } else {
               this.$message.error(res.data.msg)
             }
@@ -117,20 +104,26 @@ export default {
       this.$emit("cancel");
     },
 
-    beforeAvatarUpload(rawFile) {
-      if (rawFile.type !== "image/png") {
-        this.$message.error("只能上传图片!");
-        return false;
-      } else if (rawFile.size / 1024 / 1024 > 2) {
-        this.$message.error("大小不超过2M!");
-        return false;
-      }
-      return true;
+    saveEdit() {
+      this.$refs.newArticle.validate((valid, fields) => {
+        if (valid) {
+          try {
+            this.newArticle.updater = localStorage.getItem('userName');
+            patch(`/wx_article_manage/${this.editData.id}/`, this.newArticle).then(() => {
+              this.$message.success('编辑已保存');
+              this.$emit("confirm");
+            })
+          } catch {
+            this.$message.error('编辑保存失败, 请检查网络');
+          }
+        } else {
+          console.log("error submit!", fields);
+        }
+      })
     },
 
     handleAvatarSuccess(response) {
-      this.$refs.upload.clearFiles();
-      this.newArticle.thumb_url = response.imgurl;
+      this.newArticle.cover_img = `${this.baseUrl}${response}`;
     },
   },
 };
@@ -145,16 +138,19 @@ export default {
   left: 0;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 5;
+
   .wap {
     width: 800px;
     height: 500px;
     background-color: #fff;
     margin: calc(50vh - 250px) auto;
     position: relative;
+
     .content {
       width: 90%;
       margin: 0 auto;
     }
+
     .title {
       width: 96%;
       padding: 0 2%;
@@ -163,11 +159,13 @@ export default {
       margin-bottom: 10px;
       color: #fff;
     }
+
     .radio-item {
       width: 160px;
       margin: 0 20px;
       display: block;
     }
+
     .operate {
       position: absolute;
       bottom: 0;
@@ -179,6 +177,7 @@ export default {
     }
   }
 }
+
 .avatar-uploader .avatar {
   width: 178px;
   height: 178px;

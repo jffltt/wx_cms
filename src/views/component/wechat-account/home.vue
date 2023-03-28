@@ -40,8 +40,8 @@
               <el-input v-model="row.sort" style="width: 100%"></el-input>
               <el-button @click="updateArticle(row)" style="float: right; margin-top: 20px" size="small"
                 type="primary">保存</el-button>
-              <el-button @click="showEditId = 0" style="float: right; margin-top: 20px; margin-right: 10px;"
-                size="small" type="info">取消</el-button>
+              <el-button @click="showEditId = 0" style="float: right; margin-top: 20px; margin-right: 10px;" size="small"
+                type="info">取消</el-button>
             </div>
           </el-popover>
         </template>
@@ -64,24 +64,30 @@
           <span class="label-text">{{ row.url }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150px" fixed="right" align="center">
+      <el-table-column label="操作" width="130px" fixed="right" align="center">
         <template #header>
           <span style="margin-right: 10px">操作</span>
           <el-tag style="cursor: pointer" @click="search = { classList: [] }">清除筛选</el-tag>
         </template>
         <template #default="{ row }">
-          <el-button type="success" @click="view(row)" size="small">浏览</el-button>
-          <el-button type="primary" @click="activeClassBox(row)" size="small">归类</el-button>
+          <tip-icon text="编辑" :icon="Edit" @click="openEdit(row)"></tip-icon>
+          <el-popconfirm title="将永久删除这篇文章，您确定要删除吗?" @confirm="submitDelete(row.id)">
+            <template #reference>
+              <tip-icon text="删除" :icon="Delete" type="danger"></tip-icon>
+            </template>
+          </el-popconfirm>
+          <tip-icon text="查看" type="success" @click="view(row)" :icon="View"></tip-icon>
+          <tip-icon text="归类" type="primary" @click="activeClassBox(row)" :icon="Connection"></tip-icon>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination">
-      <el-pagination class="el-pagination" background :page-size="size" layout="total, jumper, pager, next"
-        :total="total" @current-change="changePage" />
+      <el-pagination class="el-pagination" background :page-size="size" layout="total, jumper, pager, next" :total="total"
+        @current-change="changePage" />
     </div>
     <Classified v-if="confirmClassShow" :classList="classList" @confirm="confirmClassified" @cancel="cancleClassified">
     </Classified>
-    <AddManually v-if="addManuallyShow" :classList="classList" @confirm="confirmAddArticle" @cancel="cancelAddArticle">
+    <AddManually v-if="addManuallyShow" :classList="classList" @confirm="confirmAddArticle" :edit-data="editData" @cancel="cancelAddArticle">
     </AddManually>
   </div>
 </template>
@@ -92,8 +98,9 @@ import ListFilter from "../../../components/list-filter.vue";
 import DateFilter from "../../../components/date-filter.vue";
 import Classified from "../../../components/classified.vue";
 import AddManually from "../../../components/add-manually.vue";
+import TipIcon from "@/components/tip-icon.vue";
 import createExcel from "@/api/exportXlsx.js";
-import { get, post, patch } from '@/api/public';
+import { get, post, patch, remove} from '@/api/public';
 export default {
   components: {
     StringFilter,
@@ -101,6 +108,7 @@ export default {
     DateFilter,
     Classified,
     AddManually,
+    TipIcon,
   },
   data() {
     return {
@@ -121,6 +129,7 @@ export default {
       addManuallyShow: false,
       showEditId: 0,
       limitExportSerach: false,
+      editData: undefined,
     };
   },
   mounted() {
@@ -256,8 +265,27 @@ export default {
           });
         });
     },
+
+    async submitDelete(id) {
+      try {
+        await remove(`/wx_article_manage/${id}`)
+        this.$message.success('文章已删除');
+        this.getList();
+      } catch {
+        this.$message.error('删除出错, 请检查网络请求');
+      }
+    },
+
+    openEdit(row) {
+      this.editData = row;
+      this.addManuallyShow = true;
+    }
   },
 };
+</script>
+
+<script setup>
+import { Edit, Delete, View, Connection } from '@element-plus/icons-vue';
 </script>
 
 <style lang="less" scoped>

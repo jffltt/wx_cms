@@ -91,7 +91,7 @@ export default {
   }
 }
 .page-content{
-  height: 600px;
+  height: 60vh;
 }
 .pagination{
   float: right;

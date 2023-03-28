@@ -1,162 +1,149 @@
 <template>
-  <div class="app-content">
-    <div class="mobile-header" v-if="isMobile"></div>
-    <div class="pc-header" v-else>
-      <div>
-        XXX技术有限责任公司
-      </div>
-      <div>
-        <div>
-          <span v-for="(item, index) in menuList" :key="index" :class="currentPath === item.path ? 'active-nav' : ''"
-            @click="navGetTo(item)">
-            <HomeFilled class="icon" />
-            <span class="nav-item">{{ item.name }}</span>
-          </span>
-        </div>
-      </div>
-      <div>
-        <el-button type="primary" text>Login</el-button>
-      </div>
+  <div class="header">
+    <div class="site-name">
+      <i>{{ siteName }}</i>
     </div>
-    <div class="content">
-      <div class="main">
-        <router-view></router-view>
+    <div class="site-menu">
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect"
+        :background-color="theme.headerBackground" :text-color="theme.headerTextColor"
+        :active-text-color="theme.headerTextColor" unique-opened router>
+        <el-menu-item index="/index/home">首页</el-menu-item>
+        <el-menu-item index="/index/about">关于我们</el-menu-item>
+        <el-menu-item index="/index/news">时事新闻</el-menu-item>
+      </el-menu>
+    </div>
+    <div class="site-login">
+      <el-dropdown trigger="click">
+        <span class="user-name">{{ userName || '访客' }}</span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item v-if="!userName">注册</el-dropdown-item>
+            <el-dropdown-item>{{ userName ? '退出登录' : '登录' }}</el-dropdown-item>
+            <el-dropdown-item v-if="userName">修改密码</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+  </div>
+  <div class="site-content">
+    <div class="site-main">
+      <router-view></router-view>
+    </div>
+    <div class="site-foot">
+      <div>
+        <el-row>
+          <el-col :span="8">
+            <h3>友情链接</h3>
+            <span class="link-item" v-for="i in 4" :key="i">23523</span>
+          </el-col>
+          <el-col :span="8">
+            <h3>共享服务</h3>
+            <span class="link-item" v-for="i in 4" :key="i">23523</span>
+          </el-col>
+          <el-col :span="8">
+            <h3>联系方式</h3>
+            <span class="link-item">地址：江苏省镇江市京口区运河路208号</span>
+            <span class="link-item">联系电话：0511-85985266</span>
+            <span class="link-item">邮箱：laoganbu@163.com</span>
+          </el-col>
+        </el-row>
       </div>
-      <div class="footer">
-        <div>
-          <h3>友情链接</h3>
-          <el-row>
-            <el-col v-for="i in 15" :span="6" :key="i">百度还是的后果</el-col>
-          </el-row>
-          <div style="margin-top: 10px;">联系电话：05112541548 地址：江苏省镇江市京口区大西路286号 邮箱：zjshylgbb@163.com</div>
-        </div>
-        <div>XXX技术有限责任公司版权所有 @2018~2022</div>
+      <div class="record-info">
+        <div>苏ICP备25487145号 镇江市行业老干部管理服务办公室 @1987~2023</div>
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
-import { computed, provide, ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
-let color = ref('red');
-const router = useRouter();
+import { reactive, ref } from 'vue';
 
-let menuList = reactive([
-  { name: '首页', path: '/index/home', icon: '' },
-  { name: '关于我们', path: '/index/about', icon: '' },
-  { name: '新闻动态', path: '/index/news', icon: '' },
-  { name: '联系我们', path: '/index/connect', icon: '' },
-])
+const theme = reactive({
+  backgroundColor: '#cccccc',
+  headerBackground: '#c21f1f',
+  headerTextColor: '#ffffff',
+  textColor: '#000000',
+  footBackground: '#636363',
+  footTextColor: '#ffffff',
+})
 
-let currentPath = ref('/index/home');
+let activeIndex = ref('1');
+let siteName = ref('镇江市行业老干部管理服务办公室');
+let userName = ref('admin');
 
-let isMobile = computed(() => {
-  return document.body.clientWidth > 800 ? false : true;
-});
-
-function navGetTo(item) {
-  currentPath = item.path;
-  router.push({ path: item.path })
-}
-
-let activeName = ref('home');
-console.log(activeName);
-provide('isMobile', isMobile);
 </script>
+
 <style scoped lang="less">
-.app-content {
-  width: 100vw;
-  height: 100vh;
+.header {
+  height: 80px;
+  background-color: v-bind('theme.headerBackground');
+  color: v-bind('theme.headerTextColor');
   overflow: hidden;
 
-  .pc-header {
-    height: 99px;
+  .site-name {
+    width: calc(50vw - 500px);
+    height: 80px;
+    float: left;
     text-align: center;
-    border-bottom: 1px solid #d1d1d1;
-    background-color: #ffffff;
+    line-height: 80px;
+    font-size: 1.2rem;
+  }
 
-    &>div:nth-child(1) {
-      height: 100px;
-      width: 200px;
-      float: left;
-    }
+  .site-login {
+    width: calc(50vw - 500px);
+    height: 80px;
+    float: left;
+    text-align: center;
 
-    &>div:nth-child(2) {
-      width: calc(100vw - 400px);
-      height: 100px;
-      float: left;
-      text-align: center;
-
-      &>div {
-        &>span {
-          display: inline-block;
-          font-size: 18px;
-          padding: 39px;
-          cursor: pointer;
-        }
-
-
-        & :hover,
-        .active-nav {
-          background-color: v-bind('color');
-          color: white;
-        }
-
-        .nav-item {
-          float: left;
-        }
-
-        .icon {
-          float: left;
-          height: 1rem;
-          width: 1rem;
-          margin: 0 5px;
-          margin-top: 5px;
-        }
-      }
-    }
-
-    &>div:nth-child(3) {
-      width: 200px;
-      height: 100px;
-      float: left;
+    .user-name {
+      cursor: pointer;
+      color: v-bind('theme.headerTextColor');
+      line-height: 80px;
     }
   }
 
-  .mobile-header {
-    height: 100px;
-    text-align: center;
-    border-bottom: 1px solid #cccccc;
+  .site-menu {
+    width: 1000px;
+    float: left;
+  }
+}
+
+.site-content {
+  height: calc(100vh - 80px);
+  width: 100vw;
+  overflow-y: auto;
+
+  .site-main {
+    min-height: 700px;
   }
 
-  .content {
-    height: calc(100vh - 100px);
-    overflow: auto;
-    .main {
-      background-color: #f1f1f1;
-      min-height: calc(100vh - 400px);
-    }
+  .site-foot {
+    background-color: v-bind('theme.footBackground');
+    color: v-bind('theme.footTextColor');
 
-    .footer {
-      background-color: #5c5c5c;
-      height: 300px;
-      padding: 0;
+    &>div {
+      width: 1200px;
+      margin: 0 auto;
 
-      &>div:nth-child(1) {
-        color: #ffffff;
-        height: 255px;
-        width: 80%;
-        margin: 0 auto;
+      .link-item {
+        display: block;
         line-height: 35px;
       }
+    }
 
-      &>div:nth-child(2) {
-        color: #ffffff;
-        background-color: #000000;
-        line-height: 45px;
-        text-align: center;
-      }
+    .record-info {
+      text-align: center;
+      width: 100%;
+      line-height: 35px;
+      background-color: black;
     }
   }
+}
+</style>
+
+<style >
+.header .el-menu--horizontal {
+  border-bottom: none;
+  height: 80px;
 }
 </style>
