@@ -34,11 +34,11 @@
         <el-row>
           <el-col :span="8">
             <h3>友情链接</h3>
-            <span class="link-item" v-for="i in 4" :key="i">23523</span>
+            <span class="link-item" v-for="i in 4" :key="i"></span>
           </el-col>
           <el-col :span="8">
             <h3>共享服务</h3>
-            <span class="link-item" v-for="i in 4" :key="i">23523</span>
+            <span class="link-item" v-for="i in 4" :key="i"></span>
           </el-col>
           <el-col :span="8">
             <h3>联系方式</h3>
@@ -49,7 +49,10 @@
         </el-row>
       </div>
       <div class="record-info">
-        <div>苏ICP备25487145号 镇江市行业老干部管理服务办公室 @1987~2023</div>
+        <div>
+          <span @click="openUrl('https://beian.miit.gov.cn')" style="cursor: pointer;">苏ICP备2023003374-1号</span> 
+          镇江市行业老干部管理服务办公室 @2019~2023
+        </div>
       </div>
     </div>
   </div>
@@ -71,6 +74,9 @@ let activeIndex = ref('1');
 let siteName = ref('镇江市行业老干部管理服务办公室');
 let userName = ref('admin');
 
+function openUrl(url) {
+  window.open(url, '_target');
+}
 </script>
 
 <style scoped lang="less">

@@ -248,8 +248,8 @@ export default {
 
     exportSearchArticle() {
       let fileName = "文章列表" + new Date().getTime();
-      let columnName = "标题,归属栏目,文章链接,排序,导入时间";
-      let columnValue = "title,article_class,url,sort,create_time";
+      let columnName = "标题,发布时间,归属栏目,文章链接,排序,导入时间";
+      let columnValue = "title,create_time,article_class,url,sort,create_time";
       get("/wx_article_manage", {
         condition: this.search,
         page: 1,

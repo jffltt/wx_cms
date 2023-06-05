@@ -181,6 +181,7 @@ export default {
               cover_img: subItem.thumb_url,
               content: subItem.content,
               url: subItem.url,
+              publish_time: subItem.publish_time,
               sort: 0,
             });
           }
